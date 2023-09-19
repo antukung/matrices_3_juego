@@ -3,23 +3,31 @@ const divTablero = document.querySelector("#tablero");
 const MAX_COL = 7;
 const MAX_FILA = 7;
 
-const POS_INICIAL_COL = 3; 
-const POS_INICIAL_FIL = 3; 
+const POS_INICIAL_COL = 3;
+const POS_INICIAL_FIL = 3;
+
+const POS_INICIAL_MAQUINA_COL = 0;
+const POS_INICIAL_MAQUINA_FIL = 0;
 
 const ARRIBA = "w";
 const ABAJO = "s";
 const IZQUIERDA = "a";
 const DERECHA = "d";
 
-let posJugador = [POS_INICIAL_FIL,POS_INICIAL_COL]
+const DIRECCIONES_MAQUINA = [ARRIBA, ABAJO, IZQUIERDA, DERECHA]; // Declarado antes de usarlo
 
-// este codigo esta agregando un evento/funcion a la pagina
-document.addEventListener("keydown", function(event) {
+let posJugador = [POS_INICIAL_FIL, POS_INICIAL_COL];
+let posMaquina = [POS_INICIAL_MAQUINA_FIL, POS_INICIAL_MAQUINA_COL];
+
+// Este código está agregando un evento/función a la página
+document.addEventListener("keydown", function (event) {
     eliminarJugador();
+    eliminarMaquina();
     modificarPosJugador(event);
+    modificarPosMaquina();
     agregarJugador(posJugador[0], posJugador[1]);
+    agregarMaquina(posMaquina[0], posMaquina[1]);
 });
-
 /**
  * Modifica la posicion del jugador si la tecla presionada es valida
  * @param {KeyboardEvent} event detectado del teclado
@@ -39,6 +47,34 @@ function modificarPosJugador(event) {
             posJugador[1]++;
     }
 }
+
+function modificarPosMaquina() {
+    const direccionAleatoria = DIRECCIONES_MAQUINA[Math.floor(Math.random() * DIRECCIONES_MAQUINA.length)];
+
+    switch (direccionAleatoria) {
+        case ARRIBA:
+            if (posMaquina[0] > 0) {
+                posMaquina[0]--;
+            }
+            break;
+        case ABAJO:
+            if (posMaquina[0] < MAX_FILA - 1) {
+                posMaquina[0]++;
+            }
+            break;
+        case IZQUIERDA:
+            if (posMaquina[1] > 0) {
+                posMaquina[1]--;
+            }
+            break;
+        case DERECHA:
+            if (posMaquina[1] < MAX_COL - 1) {
+                posMaquina[1]++;
+            }
+            break;
+    }
+}
+
 
 /**
  * Elimina el jugador en la casilla actual
@@ -63,7 +99,7 @@ function generarMatriz() {
      ;
    
     agregarJugador(POS_INICIAL_FIL, POS_INICIAL_COL);
-    
+    agregarMaquina(POS_INICIAL_MAQUINA_FIL,POS_INICIAL_MAQUINA_COL );   
 }
 
 /**
@@ -94,6 +130,18 @@ function agregarColumnas(fila) {
     `;
     }
     return columnasGeneradasHtml;
+}
+
+function agregarMaquina(fila,col) {
+    let maquina = document.querySelector(`#casilla-${fila + "-" + col}`)
+    maquina.innerHTML = `<img src="jorgumo1.gif" alt="jorgumo" id=imagen>`;
+    maquina.classList.add("maquina");
+}
+
+function eliminarMaquina() {
+    let maquina= document.querySelector(`#casilla-${posMaquina[0] + "-" + posMaquina[1]}`);
+    maquina.innerHTML = ``;
+    maquina.classList.remove("maquina");
 }
 
 generarMatriz();
